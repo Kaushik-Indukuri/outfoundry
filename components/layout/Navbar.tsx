@@ -32,7 +32,10 @@ export function Navbar() {
             {/* Product Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-sm text-foreground/80 hover:text-foreground">
+                <Button
+                  variant="ghost"
+                  className="text-sm text-foreground/80 hover:text-foreground focus-visible:border-none focus-visible:ring-0"
+                >
                   Product
                   <ChevronDown className="w-4 h-4 ml-1" />
                 </Button>
@@ -50,7 +53,9 @@ export function Navbar() {
             {/* Resources Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-sm text-foreground/80 hover:text-foreground">
+                <Button 
+                    variant="ghost" 
+                    className="text-sm text-foreground/80 hover:text-foreground focus-visible:border-none focus-visible:ring-0">
                   Resources
                   <ChevronDown className="w-4 h-4 ml-1" />
                 </Button>
