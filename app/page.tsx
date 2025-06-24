@@ -1,103 +1,145 @@
-import Image from "next/image";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { Button } from "@/components/ui/button";
+import { Zap, FileText, BarChart3, Users, Shield, Heart } from "lucide-react";
+
+const palette = [
+  "#0073EA", // blue
+  "#66B0FF", // light blue
+  "#FF7575", // red
+  "#00C875", // green
+  "#FFC400", // yellow
+];
+
+const features = [
+  {
+    icon: Zap,
+    color: palette[0],
+    title: "AI Personalization",
+    description: "Automatically personalize emails based on prospect data, company info, and recent activities."
+  },
+  {
+    icon: FileText,
+    color: palette[1],
+    title: "Smart Sequences",
+    description: "Create multi-touch campaigns with intelligent timing and conditional logic."
+  },
+  {
+    icon: BarChart3,
+    color: palette[2],
+    title: "Analytics & Insights",
+    description: "Track performance, optimize campaigns, and understand what drives responses."
+  },
+  {
+    icon: Users,
+    color: palette[3],
+    title: "Lead Management",
+    description: "Organize prospects, track interactions, and manage your sales pipeline effectively."
+  },
+  {
+    icon: Shield,
+    color: palette[4],
+    title: "Deliverability",
+    description: "Advanced email infrastructure ensures your messages reach the inbox, not spam."
+  },
+  {
+    icon: Heart,
+    color: palette[0],
+    title: "Template Library",
+    description: "Access proven email templates and copy frameworks that convert."
+  }
+];
+
+const stats = [
+  { label: "Active Users", value: "10,000+", color: palette[0] },
+  { label: "Emails Sent", value: "2.5M+", color: palette[3] },
+  { label: "Response Rate", value: "89%", color: palette[2] },
+];
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      {/* Hero Section */}
+      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-4 text-foreground">
+            Supercharge Your <span className="relative inline-block">
+              <span className="z-10 relative">Cold Outreach</span>
+              <span className="absolute left-0 right-0 bottom-0 h-3 bg-[#FFC400] rounded" style={{zIndex:0, opacity:0.5}}></span>
+            </span>
+          </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10">
+            Outfoundry automates your cold email campaigns with AI, smart sequencing, and beautiful analytics. Focus on closing, not chasing.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button size="lg" className="text-lg font-semibold bg-[#0073EA] hover:bg-[#005bb5] text-white px-8 py-4 rounded-xl shadow-md">
+              Start Free Trial
+            </Button>
+            <Button size="lg" variant="outline" className="text-lg font-semibold border-[#00C875] text-[#00C875] px-8 py-4 rounded-xl hover:bg-[#00C875]/10">
+              Watch Demo
+            </Button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+      {/* Stats Section */}
+      <section className="py-12 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {stats.map((stat, i) => (
+            <div key={stat.label} className="rounded-xl bg-white border border-border shadow-sm flex flex-col items-center py-8 px-4" style={{borderLeft: `8px solid ${stat.color}`}}>
+              <div className="text-4xl font-extrabold mb-2" style={{color: stat.color}}>{stat.value}</div>
+              <div className="text-muted-foreground text-lg font-medium">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+      {/* Features Section */}
+      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-foreground">
+              Everything you need to <span className="relative inline-block">
+                <span className="z-10 relative">scale your outreach</span>
+                <span className="absolute left-0 right-0 bottom-0 h-2 bg-[#66B0FF] rounded" style={{zIndex:0, opacity:0.4}}></span>
+              </span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              From prospecting to follow-ups, we've got you covered with powerful automation tools.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, i) => (
+              <div key={feature.title} className="p-8 rounded-2xl bg-white border border-border shadow-md flex flex-col items-start hover:shadow-lg transition-shadow">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 shadow-md" style={{background: feature.color}}>
+                  <feature.icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      {/* CTA Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-foreground">
+            Ready to transform your outreach?
+          </h2>
+          <p className="text-xl text-muted-foreground mb-8">
+            Join thousands of sales teams who've already scaled their cold email campaigns with Outfoundry.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="text-lg font-semibold bg-[#0073EA] hover:bg-[#005bb5] text-white px-8 py-4 rounded-xl shadow-md">
+              Start Free Trial
+            </Button>
+            <Button size="lg" variant="outline" className="text-lg font-semibold border-[#00C875] text-[#00C875] px-8 py-4 rounded-xl hover:bg-[#00C875]/10">
+              Schedule Demo
+            </Button>
+          </div>
+        </div>
+      </section>
+      <Footer />
     </div>
   );
 }
