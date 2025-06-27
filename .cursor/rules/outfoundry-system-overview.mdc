@@ -1,0 +1,101 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Outfoundry system architecture
+globs:
+alwaysApply: true
+---
+# Outfoundry System Architecture
+
+## Core Components
+
+1. **Frontend (Web)** - Next.js application
+   - Landing page and blogs
+   - UI for CSV upload, draft review/editing, send controls, analytics dashboard  
+   - Uses Supabase JS client for Auth & Postgres queries  
+   - Located in `/web` directory
+
+2. **Supabase** 
+   - **Auth**: user sign-up/sign-in, JWTs, RLS policies  
+   - **Postgres DB**: leads, enriched metadata, email drafts, send statuses, metrics  
+
+3. **AWS S3**  
+   - Raw CSV ingestion via presigned URLs  
+   - Triggers Parser Lambda on new upload  
+
+4. **SQS Queues**  
+   - **Processing Queue**: holds parsed lead records  
+   - **Generation Queue**: holds enriched records awaiting email generation  
+   - **Sending Queue**: holds user-approved drafts for delivery 
+
+5. **AWS Lambda Workers**  
+   - **Parser**: reads CSV → enqueues each lead to Processing Queue  
+   - **Enrichment**: dequeues → calls enrichment APIs (optionally caches in Redis) → writes to Postgres → enqueues to Generation Queue  
+   - **Generation**: dequeues → calls LLM (gpt-3.5-turbo) → writes draft to Postgres  
+   - **Sender**: dequeues → sends via SES → logs status in Postgres  
+   - **Webhook**: handles SES bounce/open callbacks → updates Postgres  
+   - **Analytics**: scheduled or via DB streams → aggregates metrics back into Postgres  
+   - All workers located in `/workers` directory
+
+6. **ElastiCache (Redis, optional)**  
+   - Caches enrichment lookups & LLM outputs to reduce external calls  
+
+7. **SES (Simple Email Service)**  
+   - SMTP delivery at $0.10 per 1 000 emails  
+   - Webhooks for bounces/opens  
+
+## Directory Structure
+
+```
+/helicone
+├── /web                 # Next.js frontend application
+├── /worker              # background lambda workers
+│   ├── parser/
+│   ├── enrichment/
+│   ├── generation/
+│   ├── sender/
+│   ├── webhook/
+│   └── analytics/
+├── libs                 # shared code (TS/JS)
+│   ├── models           # Type definitions (Lead, Draft, Metrics…)
+│   └── utils            # logging, error handling, rate-limit helpers
+├── infra
+│   ├── aws                  # Terraform modules
+│       ├── s3.tf
+│       ├── sqs.tf
+│       ├── lambda.tf
+│       ├── ses.tf
+│       └── redis.tf
+├── supabase                 
+│   ├── migrations           
+```
+
+## Data Flow
+
+1. **User Upload**  
+   - Browser → Next.js → gets presigned S3 URL → PUT CSV to S3  
+2. **Parsing**  
+   - S3 event → Parser Lambda → splits rows → → Processing Queue  
+3. **Enrichment**  
+   - Processing Queue → Enrichment Lambda → API calls (caching in Redis) → writes enriched lead to Supabase Postgres → → Generation Queue  
+4. **Draft Generation**  
+   - Generation Queue → Generation Lambda → LLM call → writes email draft to Postgres  
+5. **Review & Send**  
+   - User reviews in UI → Next.js enqueues selected IDs → Sending Queue → Sender Lambda → SES  
+6. **Delivery Feedback**  
+   - SES → Webhook Lambda → updates bounce/open in Postgres  
+7. **Analytics**  
+   - Analytics Lambda (cron or DB stream) → aggregates send/open/click metrics → stored back in Postgres
+
+## Technical Implementation
+
+- **Frontend**: React, Next.js, Tailwind CSS, shadcn
+- **Auth**: Supabase Auth (JWTs, RLS)
+- **File Ingestion**: AWS S3
+- **Backend**: AWS SQS (queues), AWS Lambda (Node.js/TypeScript)
+- **Email**: OpenAI GPT-3.5-Turbo (drafting), AWS SES (delivery)
+- **IaC**: Terraform
+- **Database**: Supabase Postgres

@@ -23,18 +23,19 @@ export function Navbar() {
                 alt="Outfoundry"
                 width={140}
                 height={20}
-                className="h-7 w-auto"
+                className="h-6 w-auto"
               />
             </Link>
           </div>
           
-          <div className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
+          <div className="hidden md:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
             {/* Product Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="text-sm text-foreground/80 hover:text-foreground focus-visible:border-none focus-visible:ring-0"
+                  size="sm"
+                  className="text-sm text-foreground/80 hover:text-foreground"
                 >
                   Product
                   <ChevronDown className="w-4 h-4 ml-1" />
@@ -55,7 +56,8 @@ export function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button 
                     variant="ghost" 
-                    className="text-sm text-foreground/80 hover:text-foreground focus-visible:border-none focus-visible:ring-0">
+                    size="sm"
+                    className="text-sm text-foreground/80 hover:text-foreground">
                   Resources
                   <ChevronDown className="w-4 h-4 ml-1" />
                 </Button>
@@ -73,19 +75,19 @@ export function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link 
-              href="#pricing" 
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
-            >
-              Pricing
-            </Link>
+            <Button 
+                variant="ghost" 
+                size="sm"
+                className="text-sm text-foreground/80 hover:text-foreground">
+                Pricing
+            </Button>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" className="text-sm">
               Login
             </Button>
-            <Button size="default" className="text-sm">
+            <Button size="sm" className="text-sm">
               Get Started
             </Button>
           </div>

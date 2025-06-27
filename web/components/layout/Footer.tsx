@@ -6,37 +6,37 @@ export function Footer() {
     <footer className="py-12 bg-secondary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
+          <div className="flex flex-col gap-4">
             <Image
               src="/outfoundry.svg"
               alt="Outfoundry"
               width={120}
               height={17}
-              className="h-6 w-auto mb-4"
+              className="h-6 w-auto"
             />
             <p className="text-muted-foreground">
               The modern cold email automation platform for sales teams.
             </p>
           </div>
-          <div>
-            <h4 className="font-semibold mb-4">Product</h4>
-            <ul className="space-y-2 text-muted-foreground">
+          <div className="flex flex-col gap-4">
+            <h4 className="font-semibold">Product</h4>
+            <ul className="flex flex-col gap-2 text-muted-foreground">
               <li><Link href="#" className="hover:text-foreground transition-colors">Features</Link></li>
               <li><Link href="#" className="hover:text-foreground transition-colors">Templates</Link></li>
               <li><Link href="#" className="hover:text-foreground transition-colors">Pricing</Link></li>
             </ul>
           </div>
-          <div>
-            <h4 className="font-semibold mb-4">Company</h4>
-            <ul className="space-y-2 text-muted-foreground">
+          <div className="flex flex-col gap-4">
+            <h4 className="font-semibold">Company</h4>
+            <ul className="flex flex-col gap-2 text-muted-foreground">
               <li><Link href="#" className="hover:text-foreground transition-colors">Blog</Link></li>
               <li><Link href="#" className="hover:text-foreground transition-colors">Changelog</Link></li>
               <li><Link href="#" className="hover:text-foreground transition-colors">FAQ</Link></li>
             </ul>
           </div>
-          <div>
-            <h4 className="font-semibold mb-4">Support</h4>
-            <ul className="space-y-2 text-muted-foreground">
+          <div className="flex flex-col gap-4">
+            <h4 className="font-semibold">Support</h4>
+            <ul className="flex flex-col gap-2 text-muted-foreground">
               <li><Link href="#" className="hover:text-foreground transition-colors">Help Center</Link></li>
               <li><Link href="#" className="hover:text-foreground transition-colors">Community</Link></li>
             </ul>
