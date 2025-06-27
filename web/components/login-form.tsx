@@ -1,26 +1,66 @@
 'use client'
 
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useAuth } from "@/contexts/AuthContext"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  
+  const { signIn } = useAuth()
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const { error } = await signIn(email, password)
+    
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+    } else {
+      router.push('/dashboard')
+    }
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-muted-foreground text-sm text-balance">
           Enter your email below to login to your account
         </p>
       </div>
+      
+      {error && (
+        <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 text-destructive text-sm">
+          {error}
+        </div>
+      )}
+      
       <div className="grid gap-6">
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input 
+            id="email" 
+            type="email" 
+            placeholder="m@example.com" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required 
+          />
         </div>
         <div className="grid gap-3">
           <div className="flex items-center">
@@ -32,17 +72,23 @@ export function LoginForm({
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" required />
+          <Input 
+            id="password" 
+            type="password" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required 
+          />
         </div>
-        <Button type="submit" className="w-full">
-          Login
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? 'Signing in...' : 'Login'}
         </Button>
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
             Or continue with
           </span>
         </div>
-        <Button variant="outline" className="w-full">
+        <Button variant="outline" className="w-full" type="button" disabled>
           <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white mx-1 h-4 w-4 shrink-0">
             <g clipPath="url(#clip0_1276_2)">
               <path d="M16 8.19187C16 7.65157 15.9467 7.09385 15.8577 6.57099H8.15782V9.65589H12.5679C12.3901 10.6493 11.8033 11.5208 10.9319 12.0785L13.5638 14.0828C15.1109 12.6711 16 10.6145 16 8.19187Z" fill="#4280EF"></path>

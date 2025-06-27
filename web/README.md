@@ -1,8 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Outfoundry Web Application
+
+This is the Next.js frontend application for Outfoundry, a lead enrichment and email automation platform.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+1. Node.js 18+ installed
+2. Supabase project set up
+
+### Environment Setup
+
+Create a `.env.local` file in the `web` directory with your Supabase credentials:
+
+```bash
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### Installation
+
+Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### Development
+
+Run the development server:
 
 ```bash
 npm run dev
@@ -10,24 +41,49 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Authentication**: Sign up, sign in, and sign out with Supabase Auth
+- **Protected Routes**: Dashboard access requires authentication
+- **Responsive Design**: Built with Tailwind CSS and shadcn/ui components
+- **Type Safety**: Full TypeScript support
+
+## Project Structure
+
+```
+web/
+├── app/                    # Next.js app directory
+│   ├── dashboard/         # Protected dashboard page
+│   ├── login/            # Sign in page
+│   └── signup/           # Sign up page
+├── components/            # Reusable UI components
+│   ├── ui/               # shadcn/ui components
+│   └── layout/           # Layout components (Navbar, Footer)
+├── contexts/             # React contexts (AuthContext)
+├── lib/                  # Utility functions and configurations
+└── public/               # Static assets
+```
+
+## Authentication Flow
+
+1. Users can sign up with email/password
+2. Email confirmation is required (handled by Supabase)
+3. Users can sign in with their credentials
+4. Authenticated users are redirected to the dashboard
+5. Protected routes automatically redirect unauthenticated users to login
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about the technologies used:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Supabase Documentation](https://supabase.com/docs)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [shadcn/ui](https://ui.shadcn.com/)
 
 ## Deploy on Vercel
 

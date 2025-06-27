@@ -25,11 +25,11 @@ export default function SignupPage() {
           </div>
         </div>
       </div>
-      <div className="bg-muted relative hidden lg:block">
+      <div className="bg-muted relative hidden lg:block m-4 rounded-xl overflow-hidden">
         <img
-          src="/placeholder.svg"
+          src="/outfoundry-login.png"
           alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          className="h-full w-full object-cover object-center dark:brightness-[0.2] dark:grayscale"
         />
       </div>
     </div>

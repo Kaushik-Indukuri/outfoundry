@@ -16,6 +16,7 @@ alwaysApply: true
 3. Use typography components for consistent text styling
 4. Use Tailwind's spacing scale
 5. Use lucide-react for icons
+6. Use shadcn components, blocks, and charts wherever possible for consistency
 
 ## Typography System
 
