@@ -1,5 +1,6 @@
 'use client'
 
+import React from "react"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,15 +15,17 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
 interface EditTemplatePageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default function EditTemplatePage({ params }: EditTemplatePageProps) {
+  const resolvedParams = React.use(params)
+  
   return (
     <ProtectedRoute>
-      <EditTemplateContent id={params.id} />
+      <EditTemplateContent id={resolvedParams.id} />
     </ProtectedRoute>
   )
 }
