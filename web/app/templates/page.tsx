@@ -3,9 +3,13 @@
 import { ProtectedRoute } from "@/components/ProtectedRoute"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Plus, FileText, Edit, Trash2, Copy, Search } from "lucide-react"
+import { Plus, FileText, Edit, Trash2, Copy, Search, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
+import { useEffect, useState } from "react"
+import { templatesService, Template } from "@/lib/database"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export default function TemplatesPage() {
   return (
@@ -16,6 +20,100 @@ export default function TemplatesPage() {
 }
 
 function TemplatesContent() {
+  const [templates, setTemplates] = useState<Template[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState("")
+  const router = useRouter()
+
+  // Load templates on component mount
+  useEffect(() => {
+    loadTemplates()
+  }, [])
+
+  const loadTemplates = async () => {
+    try {
+      setLoading(true)
+      const { data, error } = await templatesService.getAll()
+      
+      if (error) {
+        toast.error("Failed to load templates")
+        console.error("Error loading templates:", error)
+        return
+      }
+
+      setTemplates(data || [])
+    } catch (error) {
+      toast.error("Failed to load templates")
+      console.error("Error loading templates:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to delete "${name}"?`)) {
+      return
+    }
+
+    try {
+      const { error } = await templatesService.delete(id)
+      
+      if (error) {
+        toast.error("Failed to delete template")
+        console.error("Error deleting template:", error)
+        return
+      }
+
+      toast.success("Template deleted successfully")
+      setTemplates(templates.filter(t => t.id !== id))
+    } catch (error) {
+      toast.error("Failed to delete template")
+      console.error("Error deleting template:", error)
+    }
+  }
+
+  const handleDuplicate = async (id: string) => {
+    try {
+      const { data, error } = await templatesService.duplicate(id)
+      
+      if (error) {
+        toast.error("Failed to duplicate template")
+        console.error("Error duplicating template:", error)
+        return
+      }
+
+      toast.success("Template duplicated successfully")
+      if (data) {
+        setTemplates([data, ...templates])
+      }
+    } catch (error) {
+      toast.error("Failed to duplicate template")
+      console.error("Error duplicating template:", error)
+    }
+  }
+
+  const handleEdit = (id: string) => {
+    router.push(`/templates/edit/${id}`)
+  }
+
+  // Filter templates based on search term
+  const filteredTemplates = templates.filter(template =>
+    template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    template.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffTime = Math.abs(now.getTime() - date.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    if (diffDays === 1) return "1 day ago"
+    if (diffDays < 7) return `${diffDays} days ago`
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`
+    return date.toLocaleDateString()
+  }
+
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col gap-6">
@@ -42,137 +140,122 @@ function TemplatesContent() {
             <Input 
               placeholder="Search templates..." 
               className="pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            <span className="ml-2 text-muted-foreground">Loading templates...</span>
+          </div>
+        )}
+
         {/* Templates Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Create New Template Card */}
-          <Link href="/templates/new">
-            <Card className="border-dashed border-2 border-muted-foreground/25 hover:border-muted-foreground/50 transition-colors cursor-pointer">
-              <CardContent className="p-6">
-                <div className="flex flex-col items-center justify-center gap-4 text-center">
-                  <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-                    <Plus className="w-6 h-6 text-muted-foreground" />
+        {!loading && (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Create New Template Card */}
+            <Link href="/templates/new">
+              <Card className="border-dashed border-2 border-muted-foreground/25 hover:border-muted-foreground/50 transition-colors cursor-pointer">
+                <CardContent className="p-6">
+                  <div className="flex flex-col items-center justify-center gap-4 text-center">
+                    <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                      <Plus className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Create New Template</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Start with a blank template
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">Create New Template</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Start with a blank template
-                    </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Template Cards */}
+            {filteredTemplates.map((template) => (
+              <Card key={template.id}>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">{template.name}</CardTitle>
+                    <div className="flex items-center gap-1">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleEdit(template.id)}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleDuplicate(template.id)}
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleDelete(template.id, template.name)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {template.description || "No description"}
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <FileText className="w-3 h-3" />
+                    <span>Created {formatDate(template.created_at)}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
-          {/* Sample Template */}
+        {/* Empty State */}
+        {!loading && templates.length === 0 && (
           <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Cold Outreach</CardTitle>
-                <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="sm">
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                A professional cold outreach template for B2B sales...
-              </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <FileText className="w-3 h-3" />
-                <span>Created 2 days ago</span>
+            <CardContent className="p-12">
+              <div className="text-center">
+                <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No templates yet</h3>
+                <p className="text-muted-foreground mb-4">
+                  Create your first email template to get started with campaigns
+                </p>
+                <Button asChild>
+                  <Link href="/templates/new">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Template
+                  </Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
+        )}
 
-          {/* Another Sample Template */}
+        {/* No Search Results */}
+        {!loading && templates.length > 0 && filteredTemplates.length === 0 && (
           <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Follow-up</CardTitle>
-                <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="sm">
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Follow-up email template for prospects who didn't respond...
-              </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <FileText className="w-3 h-3" />
-                <span>Created 1 week ago</span>
+            <CardContent className="p-12">
+              <div className="text-center">
+                <Search className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No templates found</h3>
+                <p className="text-muted-foreground mb-4">
+                  Try adjusting your search terms
+                </p>
               </div>
             </CardContent>
           </Card>
-
-          {/* Third Sample Template */}
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Event Invitation</CardTitle>
-                <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="sm">
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Template for inviting prospects to webinars and events...
-              </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <FileText className="w-3 h-3" />
-                <span>Created 3 weeks ago</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Empty State (hidden for now) */}
-        <Card className="hidden">
-          <CardContent className="p-12">
-            <div className="text-center">
-              <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No templates yet</h3>
-              <p className="text-muted-foreground mb-4">
-                Create your first email template to get started with campaigns
-              </p>
-              <Button asChild>
-                <Link href="/templates/new">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Template
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        )}
       </div>
     </div>
   )

@@ -8,37 +8,75 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Save, Loader2 } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
-import { templatesService } from "@/lib/database"
+import { useState, useEffect } from "react"
+import { templatesService, Template } from "@/lib/database"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
-export default function NewTemplatePage() {
+interface EditTemplatePageProps {
+  params: {
+    id: string
+  }
+}
+
+export default function EditTemplatePage({ params }: EditTemplatePageProps) {
   return (
     <ProtectedRoute>
-      <NewTemplateContent />
+      <EditTemplateContent id={params.id} />
     </ProtectedRoute>
   )
 }
 
-function NewTemplateContent() {
+function EditTemplateContent({ id }: { id: string }) {
+  const [template, setTemplate] = useState<Template | null>(null)
   const [templateData, setTemplateData] = useState({
     name: '',
     description: '',
     subject: '',
-    content: `Hi {{name}},
-
-I hope this email finds you well. I came across {{company}} and was impressed by your work in {{industry}}.
-
-I believe we could potentially collaborate on some exciting opportunities. Would you be interested in a brief 15-minute call to discuss how we might work together?
-
-Looking forward to hearing from you.
-
-Best regards,
-{{sender_name}}`
+    content: ''
   })
+  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const router = useRouter()
+
+  // Load template data on component mount
+  useEffect(() => {
+    loadTemplate()
+  }, [id])
+
+  const loadTemplate = async () => {
+    try {
+      setLoading(true)
+      const { data, error } = await templatesService.getById(id)
+      
+      if (error) {
+        toast.error("Failed to load template")
+        console.error("Error loading template:", error)
+        router.push('/templates')
+        return
+      }
+
+      if (!data) {
+        toast.error("Template not found")
+        router.push('/templates')
+        return
+      }
+
+      setTemplate(data)
+      setTemplateData({
+        name: data.name,
+        description: data.description || '',
+        subject: data.subject,
+        content: data.content
+      })
+    } catch (error) {
+      toast.error("Failed to load template")
+      console.error("Error loading template:", error)
+      router.push('/templates')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleInputChange = (field: string, value: string) => {
     setTemplateData(prev => ({
@@ -65,19 +103,19 @@ Best regards,
 
     try {
       setSaving(true)
-      const { data, error } = await templatesService.create(templateData)
+      const { data, error } = await templatesService.update(id, templateData)
       
       if (error) {
-        toast.error("Failed to save template")
-        console.error("Error saving template:", error)
+        toast.error("Failed to update template")
+        console.error("Error updating template:", error)
         return
       }
 
-      toast.success("Template saved successfully")
+      toast.success("Template updated successfully")
       router.push('/templates')
     } catch (error) {
-      toast.error("Failed to save template")
-      console.error("Error saving template:", error)
+      toast.error("Failed to update template")
+      console.error("Error updating template:", error)
     } finally {
       setSaving(false)
     }
@@ -110,6 +148,17 @@ Best regards,
     return subject
   }
 
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+          <span className="ml-2 text-muted-foreground">Loading template...</span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col gap-6">
@@ -122,9 +171,9 @@ Best regards,
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold">Create New Template</h1>
+            <h1 className="text-3xl font-bold">Edit Template</h1>
             <p className="text-muted-foreground">
-              Design an email template for your campaigns
+              Update your email template
             </p>
           </div>
         </div>
@@ -197,7 +246,7 @@ Best regards,
                     ) : (
                       <Save className="w-4 h-4 mr-2" />
                     )}
-                    {saving ? 'Saving...' : 'Save Template'}
+                    {saving ? 'Saving...' : 'Update Template'}
                   </Button>
                 </div>
               </div>
