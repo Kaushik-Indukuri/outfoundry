@@ -166,7 +166,7 @@ function EditTemplateContent({ id }: { id: string }) {
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col gap-6">
         {/* Header */}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col gap-4">
           <Link href="/templates">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />

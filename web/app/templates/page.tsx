@@ -125,7 +125,7 @@ function TemplatesContent() {
               Create and manage email templates for your campaigns
             </p>
           </div>
-          <Button asChild>
+          <Button size="sm" asChild>
             <Link href="/templates/new">
               <Plus className="w-4 h-4 mr-2" />
               Create Template
@@ -157,25 +157,6 @@ function TemplatesContent() {
         {/* Templates Grid */}
         {!loading && (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Create New Template Card */}
-            <Link href="/templates/new">
-              <Card className="border-dashed border-2 border-muted-foreground/25 hover:border-muted-foreground/50 transition-colors cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="flex flex-col items-center justify-center gap-4 text-center">
-                    <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-                      <Plus className="w-6 h-6 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Create New Template</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Start with a blank template
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-
             {/* Template Cards */}
             {filteredTemplates.map((template) => (
               <Card key={template.id}>
