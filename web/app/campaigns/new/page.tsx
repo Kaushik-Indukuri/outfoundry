@@ -142,9 +142,9 @@ function NewCampaignContent() {
         </div>
 
         {/* Progress Steps */}
-        <div className="p-4">
+        <div className="py-4">
           <div className="relative">
-            <div className="mx-4">
+            <div className="relative mx-4">
                 {/* Gray background line */}
                 <div className="absolute top-4 left-0 w-full h-0.5 bg-gray-300"></div>
                 {/* Blue progress line */}
