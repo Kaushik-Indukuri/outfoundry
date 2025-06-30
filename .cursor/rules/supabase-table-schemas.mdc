@@ -1,0 +1,169 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Supabase table schemas
+globs:
+alwaysApply: true
+---
+# Supabase Table Schemas
+
+## 1. `templates`
+```sql
+CREATE TABLE templates (
+  id           UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id      UUID        REFERENCES auth.users(id) ON DELETE CASCADE,
+  name         TEXT        NOT NULL,
+  description  TEXT,
+  subject      TEXT        NOT NULL,
+  content      TEXT        NOT NULL,
+  created_at   TIMESTAMPTZ DEFAULT NOW(),
+  updated_at   TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+## 2. RLS on `templates`
+```sql
+CREATE POLICY "Users can view own templates" 
+  ON templates FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own templates" 
+  ON templates FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own templates" 
+  ON templates FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own templates" 
+  ON templates FOR DELETE
+  USING (auth.uid() = user_id);
+```
+
+## 3. `campaigns`
+```sql
+CREATE TABLE public.campaigns (
+  id           UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id      UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  name         TEXT        NOT NULL,
+  description  TEXT,
+  template_id  UUID        REFERENCES public.templates(id) ON DELETE SET NULL,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
+
+## 4. RLS on `campaigns`
+```sql
+CREATE POLICY "Users can view own campaigns" 
+  ON campaigns FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own campaigns" 
+  ON campaigns FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own campaigns" 
+  ON campaigns FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own campaigns" 
+  ON campaigns FOR DELETE
+  USING (auth.uid() = user_id);
+```
+
+## 5. `leads` (no RLS)
+```sql
+CREATE TABLE public.leads (
+  id             UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  email          TEXT        NOT NULL,
+  name           TEXT,
+  company        TEXT,
+  title          TEXT,
+  industry       TEXT,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  enriched_data  JSONB
+);
+```
+
+## 6. `email_status` enum
+```sql
+CREATE TYPE email_status AS ENUM (
+  'pending',
+  'sent',
+  'bounced',
+  'opened',
+  'clicked'
+);
+```
+
+## 7. `campaign_leads`
+```sql
+CREATE TABLE public.campaign_leads (
+  id          UUID           PRIMARY KEY DEFAULT gen_random_uuid(),
+  campaign_id UUID           NOT NULL REFERENCES public.campaigns(id) ON DELETE CASCADE,
+  lead_id     UUID           NOT NULL REFERENCES public.leads(id)     ON DELETE CASCADE,
+  status      email_status   NOT NULL DEFAULT 'pending',
+  sent_at     TIMESTAMPTZ,
+  opened_at   TIMESTAMPTZ,
+  clicked_at  TIMESTAMPTZ
+);
+```
+
+## 8. RLS on `campaign_leads`
+```sql
+CREATE POLICY "Users can view own campaign leads"
+  ON public.campaign_leads FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1
+      FROM public.campaigns c
+      WHERE c.id = campaign_leads.campaign_id
+        AND c.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can insert own campaign leads"
+  ON public.campaign_leads FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1
+      FROM public.campaigns c
+      WHERE c.id = campaign_leads.campaign_id
+        AND c.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can update own campaign leads"
+  ON public.campaign_leads FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1
+      FROM public.campaigns c
+      WHERE c.id = campaign_leads.campaign_id
+        AND c.user_id = auth.uid()
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1
+      FROM public.campaigns c
+      WHERE c.id = campaign_leads.campaign_id
+        AND c.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can delete own campaign leads"
+  ON public.campaign_leads FOR DELETE
+  USING (
+    EXISTS (
+      SELECT 1
+      FROM public.campaigns c
+      WHERE c.id = campaign_leads.campaign_id
+        AND c.user_id = auth.uid()
+    )
+  );
+```
+
