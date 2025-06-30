@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Save, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { templatesService } from "@/lib/database"
+import { templatesService } from "@/lib/templates"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 

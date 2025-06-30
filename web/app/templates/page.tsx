@@ -7,7 +7,7 @@ import { Plus, FileText, Edit, Trash2, Copy, Search, Loader2 } from "lucide-reac
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { useEffect, useState } from "react"
-import { templatesService, Template } from "@/lib/database"
+import { templatesService, Template } from "@/lib/templates"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 

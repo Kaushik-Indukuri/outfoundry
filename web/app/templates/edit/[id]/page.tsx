@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Save, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { templatesService, Template } from "@/lib/database"
+import { templatesService, Template } from "@/lib/templates"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
