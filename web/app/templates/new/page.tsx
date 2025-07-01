@@ -172,7 +172,12 @@ function NewTemplateContent() {
                     className="mt-1 min-h-[300px]"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Available variables: {"{{first_name}}"}, {"{{last_name}}"}, {"{{company}}"}, {"{{job_title}}"}
+                    <span className="font-semibold">Variables:</span> Use <span className="font-mono bg-muted px-1 rounded">{'{{...}}'}</span> to insert personalized fields. <br />
+                    Available variables: <span className="font-mono bg-muted px-1 rounded">{'{{first_name}}'}</span>, <span className="font-mono bg-muted px-1 rounded">{'{{last_name}}'}</span>, <span className="font-mono bg-muted px-1 rounded">{'{{company}}'}</span>, <span className="font-mono bg-muted px-1 rounded">{'{{job_title}}'}</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    <span className="font-semibold">Prompts:</span> Use <span className="font-mono bg-muted px-1 rounded">{'{%...%}'}</span> to insert dynamic, AI-generated content. <br />
+                    For example: <span className="font-mono bg-muted px-1 rounded">{'{%Write a personalized intro for {{first_name}} at {{company}} based on their job title {{job_title}}%}'}</span>
                   </p>
                 </div>
                 
