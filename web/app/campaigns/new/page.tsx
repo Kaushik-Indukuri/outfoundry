@@ -84,6 +84,10 @@ function NewCampaignContent() {
       toast.error("Please select a template")
       return
     }
+    if (currentStep === 3 && uploadedLeads.length === 0) {
+      toast.error("Please upload leads before proceeding")
+      return
+    }
     setCurrentStep(prev => Math.min(prev + 1, 4))
   }
 
