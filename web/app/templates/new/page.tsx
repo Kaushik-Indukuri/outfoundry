@@ -26,16 +26,7 @@ function NewTemplateContent() {
     name: '',
     description: '',
     subject: '',
-    content: `Hi {{name}},
-
-I hope this email finds you well. I came across {{company}} and was impressed by your work in {{industry}}.
-
-I believe we could potentially collaborate on some exciting opportunities. Would you be interested in a brief 15-minute call to discuss how we might work together?
-
-Looking forward to hearing from you.
-
-Best regards,
-{{sender_name}}`
+    content: ''
   })
   const [saving, setSaving] = useState(false)
   const router = useRouter()
@@ -85,12 +76,10 @@ Best regards,
 
   // Sample data for preview
   const sampleData = {
-    name: 'John',
-    email: 'john@example.com',
+    first_name: 'John',
+    last_name: 'Doe',
     company: 'Acme Corp',
-    title: 'CEO',
-    industry: 'technology',
-    sender_name: 'Sarah'
+    job_title: 'CEO',
   }
 
   // Simple template variable replacement for preview
@@ -183,7 +172,7 @@ Best regards,
                     className="mt-1 min-h-[300px]"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Available variables: {"{{name}}"}, {"{{email}}"}, {"{{company}}"}, {"{{title}}"}, {"{{industry}}"}, {"{{sender_name}}"}
+                    Available variables: {"{{first_name}}"}, {"{{last_name}}"}, {"{{company}}"}, {"{{job_title}}"}
                   </p>
                 </div>
                 
@@ -223,12 +212,10 @@ Best regards,
                 <div className="text-xs text-muted-foreground">
                   <p><strong>Sample data used:</strong></p>
                   <ul className="list-disc list-inside space-y-1 mt-2">
-                    <li>name: {sampleData.name}</li>
-                    <li>email: {sampleData.email}</li>
+                    <li>first_name: {sampleData.first_name}</li>
+                    <li>last_name: {sampleData.last_name}</li>
                     <li>company: {sampleData.company}</li>
-                    <li>title: {sampleData.title}</li>
-                    <li>industry: {sampleData.industry}</li>
-                    <li>sender_name: {sampleData.sender_name}</li>
+                    <li>job_title: {sampleData.job_title}</li>
                   </ul>
                 </div>
               </div>
