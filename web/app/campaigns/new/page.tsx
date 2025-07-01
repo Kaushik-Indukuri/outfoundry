@@ -13,6 +13,7 @@ import { campaignsService, CreateCampaignData } from "@/lib/campaigns"
 import { templatesService, Template } from "@/lib/templates"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { LeadUpload } from "@/components/LeadUpload"
 
 export default function NewCampaignPage() {
   return (
@@ -33,6 +34,7 @@ function NewCampaignContent() {
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const router = useRouter()
+  const [uploadedLeads, setUploadedLeads] = useState<any[]>([])
 
   const steps = [
     { id: 1, title: 'Campaign Details', icon: Mail },
@@ -273,18 +275,7 @@ function NewCampaignContent() {
             )}
 
             {currentStep === 3 && (
-              <div className="space-y-4">
-                <div className="text-center py-8">
-                  <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">Lead Upload</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Upload your leads CSV file to get started
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    This feature will be implemented in the next phase
-                  </p>
-                </div>
-              </div>
+              <LeadUpload onLeadsReady={leads => setUploadedLeads(leads)} />
             )}
 
             {currentStep === 4 && (
@@ -304,6 +295,27 @@ function NewCampaignContent() {
                       <span className="font-medium">Template:</span> {selectedTemplate?.name}
                     </div>
                   </div>
+                </div>
+
+                <div>
+                  <h4 className="font-medium mb-2">Leads Uploaded</h4>
+                  {uploadedLeads.length > 0 ? (
+                    <div className="border rounded p-4 bg-muted/20">
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {uploadedLeads.length} leads uploaded
+                      </p>
+                      <ul className="text-xs text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-1">
+                        {uploadedLeads.slice(0, 10).map((lead, idx) => (
+                          <li key={idx}>{lead.email} {lead.name && `- ${lead.name}`}</li>
+                        ))}
+                      </ul>
+                      {uploadedLeads.length > 10 && (
+                        <p className="text-xs text-muted-foreground mt-2">...and {uploadedLeads.length - 10} more</p>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No leads uploaded yet.</p>
+                  )}
                 </div>
 
                 {selectedTemplate && (
