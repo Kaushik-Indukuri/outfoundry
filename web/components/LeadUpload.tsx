@@ -180,7 +180,7 @@ export function LeadUpload({ onLeadsReady }: LeadUploadProps) {
       <div>
         {step === 'upload' && (
           <div className="space-y-4">
-            <h3 className="font-semibold mb-2">Upload Leads CSV</h3>
+            <h4 className="font-medium mb-2">Upload Leads CSV</h4>
             <div
               className="w-full border-2 border-dashed border-muted-foreground rounded-lg p-8 flex flex-col text-center items-center justify-center cursor-pointer hover:border-primary  transition-colors bg-muted/30"
               onDrop={handleDrop}
@@ -208,7 +208,7 @@ export function LeadUpload({ onLeadsReady }: LeadUploadProps) {
         )}
         {step === 'map' && (
           <div className="space-y-4">
-            <h3 className="font-semibold mb-2">Map CSV Columns</h3>
+            <h4 className="font-medium mb-2">Map CSV Columns</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {LEAD_FIELDS.map(f => (
                 <div key={f.key} className="flex flex-col gap-1">
@@ -227,7 +227,7 @@ export function LeadUpload({ onLeadsReady }: LeadUploadProps) {
               ))}
             </div>
             <div className="mt-6">
-              <h5 className="font-semibold mb-2">Map to Enriched Data</h5>
+              <h5 className="font-medium mb-2">Map to Enriched Data</h5>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {headers.map(h => (
                   <label key={h} className="flex items-center gap-2">
@@ -251,15 +251,15 @@ export function LeadUpload({ onLeadsReady }: LeadUploadProps) {
         )}
         {step === 'preview' && (
           <div className="space-y-4">
-            <h4 className="font-semibold mb-2">Preview</h4>
+            <h4 className="font-medium mb-2">Preview</h4>
             <div className="overflow-x-auto border rounded">
               <table className="min-w-full text-sm">
                 <thead>
                   <tr>
                     {LEAD_FIELDS.map(f => (
-                      <th key={f.key} className="px-2 py-1 text-left font-semibold uppercase">{f.label}</th>
+                      <th key={f.key} className="px-2 py-1 text-left font-medium uppercase">{f.label}</th>
                     ))}
-                    <th className="px-2 py-1 text-left font-semibold uppercase">Enriched Data</th>
+                    <th className="px-2 py-1 text-left font-medium uppercase">Enriched Data</th>
                     <th className="px-2 py-1"></th>
                   </tr>
                 </thead>
