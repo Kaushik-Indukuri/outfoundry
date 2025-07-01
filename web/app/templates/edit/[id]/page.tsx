@@ -126,12 +126,10 @@ function EditTemplateContent({ id }: { id: string }) {
 
   // Sample data for preview
   const sampleData = {
-    name: 'John',
-    email: 'john@example.com',
+    first_name: 'John',
+    last_name: 'Doe',
     company: 'Acme Corp',
-    title: 'CEO',
-    industry: 'technology',
-    sender_name: 'Sarah'
+    job_title: 'CEO',
   }
 
   // Simple template variable replacement for preview
@@ -220,9 +218,6 @@ function EditTemplateContent({ id }: { id: string }) {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('subject', e.target.value)}
                     className="mt-1"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Use {"{{variable}}"} syntax for personalization
-                  </p>
                 </div>
                 
                 <div>
@@ -235,7 +230,12 @@ function EditTemplateContent({ id }: { id: string }) {
                     className="mt-1 min-h-[300px]"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Available variables: {"{{name}}"}, {"{{email}}"}, {"{{company}}"}, {"{{title}}"}, {"{{industry}}"}, {"{{sender_name}}"}
+                    <span className="font-semibold">Variables:</span> Use <span className="font-mono bg-muted px-1 rounded">{'{{...}}'}</span> to insert personalized fields. <br />
+                    Available variables: <span className="font-mono bg-muted px-1 rounded">{'{{first_name}}'}</span>, <span className="font-mono bg-muted px-1 rounded">{'{{last_name}}'}</span>, <span className="font-mono bg-muted px-1 rounded">{'{{company}}'}</span>, <span className="font-mono bg-muted px-1 rounded">{'{{job_title}}'}</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    <span className="font-semibold">Prompts:</span> Use <span className="font-mono bg-muted px-1 rounded">{'{%...%}'}</span> to insert dynamic, AI-generated content. <br />
+                    For example: <span className="font-mono bg-muted px-1 rounded">{'{%Write a personalized intro for {{first_name}} at {{company}} based on their job title {{job_title}}%}'}</span>
                   </p>
                 </div>
                 
@@ -275,12 +275,10 @@ function EditTemplateContent({ id }: { id: string }) {
                 <div className="text-xs text-muted-foreground">
                   <p><strong>Sample data used:</strong></p>
                   <ul className="list-disc list-inside space-y-1 mt-2">
-                    <li>name: {sampleData.name}</li>
-                    <li>email: {sampleData.email}</li>
+                    <li>name: {sampleData.first_name}</li>
+                    <li>email: {sampleData.last_name}</li>
                     <li>company: {sampleData.company}</li>
-                    <li>title: {sampleData.title}</li>
-                    <li>industry: {sampleData.industry}</li>
-                    <li>sender_name: {sampleData.sender_name}</li>
+                    <li>title: {sampleData.job_title}</li>
                   </ul>
                 </div>
               </div>

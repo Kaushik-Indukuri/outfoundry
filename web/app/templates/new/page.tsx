@@ -157,9 +157,6 @@ function NewTemplateContent() {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('subject', e.target.value)}
                     className="mt-1"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Use {"{{variable}}"} syntax for personalization
-                  </p>
                 </div>
                 
                 <div>
