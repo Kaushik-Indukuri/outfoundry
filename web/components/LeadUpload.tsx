@@ -29,9 +29,10 @@ export function LeadUpload({ onLeadsReady }: LeadUploadProps) {
   );
   const [enrichedMapping, setEnrichedMapping] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<number, string[]>>({});
-  const [step, setStep] = useState<'upload' | 'map' | 'preview'>('upload');
+  const [step, setStep] = useState<'upload' | 'map' | 'preview' | 'success'>('upload');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [importedLeadsCount, setImportedLeadsCount] = useState<number>(0);
 
   // Handle file upload
   const handleFile = (file: File) => {
@@ -126,7 +127,9 @@ export function LeadUpload({ onLeadsReady }: LeadUploadProps) {
       toast.error("No valid leads to import");
       return;
     }
+    setImportedLeadsCount(validLeads.length);
     onLeadsReady(validLeads);
+    setStep('success');
   };
 
   // Drag and drop handlers
@@ -173,6 +176,7 @@ export function LeadUpload({ onLeadsReady }: LeadUploadProps) {
     setMapping(Object.fromEntries(LEAD_FIELDS.map(f => [f.key, ""])));
     setEnrichedMapping({});
     setErrors({});
+    setImportedLeadsCount(0);
   };
 
   return (
@@ -292,6 +296,26 @@ export function LeadUpload({ onLeadsReady }: LeadUploadProps) {
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setStep('map')}>Back</Button>
               <Button onClick={handleConfirm} disabled={Object.keys(errors).length > 0}>Import Leads</Button>
+            </div>
+          </div>
+        )}
+        {step === 'success' && (
+          <div className="space-y-6">
+            <div className="text-center">
+              {/* Success Icon */}
+              <div className="w-15 h-15 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              
+              {/* Success Title */}
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">Import Complete!</h3>
+              
+              {/* Success Message */}
+              <p className="text-md text-gray-600 mb-8 max-w-md mx-auto">
+                Your leads have been successfully imported and are ready for your campaign.
+              </p>
             </div>
           </div>
         )}
